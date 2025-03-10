@@ -3,14 +3,18 @@
 - hosts: all
   become: true
   tasks:
-
-  - name: install httpd package
+ 
+  - name: update repo and install httpd package
     dnf:
       name: httpd
+      state: latest
+      update_cache: yes
     when: ansible_distribution == "Alma"
 
 
-  - name: install apache2 package
+  - name: update repo and install apache2 package
     apt:
       name: apache2
+      state: latest
+      update_cache: yes
     when: ansible_distribution in ["Ubuntu","Debian"]
