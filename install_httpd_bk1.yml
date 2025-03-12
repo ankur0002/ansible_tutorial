@@ -5,12 +5,14 @@
   pre_tasks:
   
   - name: install updates (rhe base)
+    tags: always
     dnf:
       update_only: yes
       update_cache: yes
     when: ansible_distribution == "Alma"
 
   - name: install updates (debian base)
+    tags: always
     apt:
       upgrade: dist
       update_cache: yes
@@ -21,6 +23,7 @@
   tasks:
 
   - name: install httpd package
+    tags: apache,alam
     dnf:
       name: httpd
       state: latest
@@ -31,6 +34,7 @@
   tasks:
 
   - name: install ftp package
+    tags: file-server  
     apt:
       name: ftp
       state: latest
