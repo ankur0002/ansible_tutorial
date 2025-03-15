@@ -1,0 +1,7 @@
+- name: install ftp package
+  tags: file-server
+  apt:
+      name: ftp
+      state: latest
+  when: ansible_distribution in ["Ubuntu","Debian"]
+

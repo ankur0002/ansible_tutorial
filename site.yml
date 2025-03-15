@@ -20,87 +20,21 @@
 
 - hosts: all
   become: true
-  tasks:
-
-  
-  - name: add ssh key for user1
-    tags: always
-    authorized_key:
-      user: user1
-      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPMvtmlcqMmjAbyasMx3n1ZxENqhdz/9pGApMNL+xKGj ansible_key"
-
+  roles:
+    - base
 
 - hosts: workstations
   become: true
-  tasks:
-
-  - name: install unzip
-    package:
-      name: unzip
-
-  - name: install terraform
-    unarchive:
-      src: https://releases.hashicorp.com/terraform/0.12.28/terraform_0.12.28_linux_amd64.zip
-      dest: /usr/local/bin
-      remote_src: yes
-      mode: 0755
-      owner: root
-      group: root 
-
-
+  roles:
+    - workstations
 
 - hosts: web_servers
   become: true
-  tasks:
-
-  - name: install httpd package
-    tags: apache,alam
-    dnf:
-      name: httpd
-      state: latest
-    when: ansible_distribution == "Alma"
-
-  - name: start httpd alma
-    tags: alma,apache,httpd
-    service:
-      name: httpd
-      state: started
-      enabled: yes
-    when: ansible_distribution == "Alma"
-
-  - name: change e-mail address for admin
-    tags: apache,httpd,alma
-    lineinfile:
-      path: /etc/httpd/conf/httpd.conf
-      regexp: 'ServerAdmin'
-      line: ServerAdmin somebody@somewhere.net
-    when: ansible_distribution == 'Alma'
-    register: httpd
-
-  - name: restart httpd alma
-    tags: apache,alma,httpd
-    service:
-      name: httpd
-      state: restarted
-    when: httpd.changed
-
-  - name: copy default html file to site
-    tags: apace,apache2,alma,httpd
-    copy:
-      src: default_site.html
-      dest: /var/www/html/index.html
-      owner: root
-      group: root
-      mode: 0644
-
+  roles:
+    - web_servers
 
 - hosts: file_servers
   become: true
-  tasks:
+  roles:
+    - file_servers
 
-  - name: install ftp package
-    tags: file-server  
-    apt:
-      name: ftp
-      state: latest
-    when: ansible_distribution in ["Ubuntu","Debian"]

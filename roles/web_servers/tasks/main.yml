@@ -1,0 +1,40 @@
+- name: install httpd package
+  tags: apache,alam
+  dnf:      
+    name: httpd
+    state: latest
+  when: ansible_distribution == "Alma"
+
+- name: start httpd alma
+  tags: alma,apache,httpd
+  service:
+      name: httpd
+      state: started
+      enabled: yes
+  when: ansible_distribution == "Alma"
+
+- name: change e-mail address for admin
+  tags: apache,httpd,alma
+  lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: 'ServerAdmin'
+      line: ServerAdmin somebody@somewhere.net
+  when: ansible_distribution == 'Alma'
+  register: httpd
+
+- name: restart httpd alma
+  tags: apache,alma,httpd
+  service:
+      name: httpd
+      state: restarted
+  when: httpd.changed
+
+- name: copy default html file to site
+  tags: apace,apache2,alma,httpd
+  copy:
+      src: default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+ 
