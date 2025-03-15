@@ -1,14 +1,14 @@
 - name: install httpd package
   tags: apache,alam
-  dnf:      
-    name: httpd
+  package:      
+    name:
+      - "{{ apache_package_name }}"
     state: latest
-  when: ansible_distribution == "Alma"
 
 - name: start httpd alma
   tags: alma,apache,httpd
   service:
-      name: httpd
+      name: "{{ apache_service }}"
       state: started
       enabled: yes
   when: ansible_distribution == "Alma"
@@ -18,16 +18,10 @@
   lineinfile:
       path: /etc/httpd/conf/httpd.conf
       regexp: 'ServerAdmin'
-      line: ServerAdmin somebody@somewhere.net
+      line: ServerAdmin somebody12@somewhere.net
   when: ansible_distribution == 'Alma'
-  register: httpd
+  notify: restart_apache
 
-- name: restart httpd alma
-  tags: apache,alma,httpd
-  service:
-      name: httpd
-      state: restarted
-  when: httpd.changed
 
 - name: copy default html file to site
   tags: apace,apache2,alma,httpd

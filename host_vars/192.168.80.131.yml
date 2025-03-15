@@ -1,0 +1,4 @@
+apache_package_name: httpd
+apache_service: httpd
+ssh_user: "rabit user1"
+ssh_template_file: sshd_config_alma.j2
